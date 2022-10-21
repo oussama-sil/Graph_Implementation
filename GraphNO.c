@@ -246,6 +246,7 @@ void libererNoeud(Graph *G, Noeud u){
         while(a != NULL){
             tmp = a;
             a= a->suiv;
+            dec_deg_noeud(noeud_arc(tmp));
             liberer_arc(tmp);
         }
         liberer_noeud(u);
@@ -489,51 +490,51 @@ void afficher_adjacents_noeud(Noeud u){
 
 
 
-void main(){
-    Graph G = creerGraph();
-    int nb_noeuds = 5;
-    for(int i=1;i<=nb_noeuds;i++)
-        creerNoeudAvecInfo(&G,i);
-    // for(int i=1;i<=nb_noeuds;i++)
-    //     affInfo(noeudGraph(G,i),i*10);
+/*********************************/
+/********Algo DFS*****/
 
-    // for(int i=1;i<nb_noeuds;i++)
-    //     libererNoeud(&G,noeudGraph(G,1));
-    afficher_graph(G);
-    afficher_noeuds_graph(G);
-    // for(int i =1;i<=nbreGraph(G);i++){
-    //     afficher_noeud(noeudGraph(G,i));
-    // }
-    afficher_noeud(noeudGraph(G,1));
-
-    //Test avec les arcs
-    for (int i =1;i<=nb_noeuds;i++){
-        creerArc(noeudGraph(G,1),noeudGraph(G,i),i*10+1);
-        afficher_noeud(noeudGraph(G,1));
+int getNoeudPos(Graph G,Noeud n){
+    Noeud p = G.Prem;
+    int indx = 1;
+    while(p != n && p != NULL){
+        indx++;
+        p = suiv_noeud(p);
     }
-    afficher_arc_noeud(noeudGraph(G,1));
-    afficher_arc_noeud(noeudGraph(G,2));
-    libererArc(noeudGraph(G,1),noeudGraph(G,2));
-    libererArc(noeudGraph(G,1),noeudGraph(G,3));
-    afficher_arc_noeud(noeudGraph(G,1));
-    afficher_arc_noeud(noeudGraph(G,2));
-afficher_arc_noeud(noeudGraph(G,3));
-
-    // libererArc(noeudGraph(G,1),noeudGraph(G,3));
-    // libererArc(noeudGraph(G,1),noeudGraph(G,5));
-    // afficher_arc_noeud(noeudGraph(G,1));
-    // libererArc(noeudGraph(G,1),noeudGraph(G,4));
-    // afficher_arc_noeud(noeudGraph(G,1));
-    // libererArc(noeudGraph(G,1),noeudGraph(G,2));
-    // afficher_arc_noeud(noeudGraph(G,1));
-    // afficher_arc_noeud(noeudGraph(G,2));
+    if(p != NULL){
+        return indx;
+    }else{
+        return -1;
+    }
 }
-//afficher_adjacents_noeud(noeudGraph(G,1));
-    // for(int i =1;i<=nbreGraph(G);i++){
-    //     afficher_noeud(noeudGraph(G,i));
-    // }
 
-    // for (int i=2;i<=nb_noeuds;i++){
-    //     afficher_arc(arc(noeudGraph(G,1),noeudGraph(G,i)));
-    // }
-    // afficher_noeud(adjacent(noeudGraph(G,1),1));
+
+void DFS(Graph G,int noeud_indx,Boolean Visite[]){
+    Visite[noeud_indx-1] = true;
+    printf("\t->Visite du noeud : %d\n",info(noeudGraph(G,noeud_indx)));
+    for(int i=1;i<=degre(noeudGraph(G,noeud_indx));i++){
+        if( Visite[getNoeudPos(G,adjacent(noeudGraph(G,noeud_indx),i))-1]==false){
+            DFS(G,getNoeudPos(G,adjacent(noeudGraph(G,noeud_indx),i)),Visite);
+        }
+    }
+}
+
+void parcour_DFS(Graph G){
+    printf("\n\t------------------->Parcour DFS<-------------------\n");
+    Boolean *Visite =  malloc(nbreGraph(G)*sizeof(Boolean));
+    int composante = 0;
+    for(int i = 0;i<nbreGraph(G);i++){
+        Visite[i]=false;
+    }
+
+    for(int i = 1;i<=nbreGraph(G);i++){
+        if(Visite[i-1]==false){
+            composante++;
+            printf("-->Visite composante %d : \n",composante);
+            DFS(G,i,Visite);
+        }
+    }
+
+
+}
+
+

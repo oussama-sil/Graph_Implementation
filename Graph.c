@@ -276,6 +276,8 @@ void libererNoeud(Graph *G, Noeud u){
         while(a != NULL){
             tmp = a;
             a= a->suiv;
+            dec_deg_in_noeud(noeud_arc(tmp));
+            dec_deg_noeud(noeud_arc(tmp));
             liberer_arc(tmp);
         }
         liberer_noeud(u);
@@ -432,7 +434,7 @@ void afficher_arc(Arc a){
 }
 void afficher_noeud(Noeud n){
     if(n!=NULL){
-        printf("Noeud : { info : %d , deg : %d ,",info_noeud(n),deg_noeud(n));
+        printf("Noeud : { info : %d , deg: %d , deg_in: %d  , deg_out: %d,",info_noeud(n),deg_noeud(n),deg_in(n),deg_out(n));
         if (liste_arc_noeud(n) == NULL){
             printf(" info_premier_arc : NULL ,");
         }else{

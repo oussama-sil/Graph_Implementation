@@ -519,7 +519,7 @@ void DFS(Graph G,int noeud_indx,Boolean Visite[]){
     }
 }
 
-void parcour_DFS(Graph G){
+int parcour_DFS(Graph G){
     printf("\n\t------------------->Parcour DFS<-------------------\n");
     Boolean *Visite =  malloc(nbreGraph(G)*sizeof(Boolean));
     int composante = 0;
@@ -534,6 +534,7 @@ void parcour_DFS(Graph G){
             DFS(G,i,Visite);
         }
     }
+    return composante;
 }
 
 
@@ -575,6 +576,74 @@ void parcour_BFS(Graph G){
             composante++;
             printf("-->Visite composante %d : \n",composante);
             BFS(G,i,Visite);
+        }
+    }
+}
+
+
+/*****TD03*/
+
+void DFS_Exp(Graph G,int noeud_indx,Boolean Visite[],int exp){
+    Visite[noeud_indx-1] = true;
+    for(int i=1;i<=degre(noeudGraph(G,noeud_indx));i++){
+        if( Visite[getNoeudPos(G,adjacent(noeudGraph(G,noeud_indx),i))-1]==false && getNoeudPos(G,adjacent(noeudGraph(G,noeud_indx),i)) != exp ){
+            DFS_Exp(G,getNoeudPos(G,adjacent(noeudGraph(G,noeud_indx),i)),Visite,exp);
+        }
+    }
+}
+
+
+
+void pts_articulation_connexe(Graph G){ //cas connexe 
+    printf("\n\t------------------->Point d'articulation<-------------------\n");
+    int *arti = malloc(nbreGraph(G)*sizeof(int));
+    Boolean *Visite = malloc(nbreGraph(G)*sizeof(Boolean));
+    int next;
+    int test = false;
+    for(int i=1;i<=nbreGraph(G);i++){
+        for(int j = 0;j<nbreGraph(G);j++){
+            Visite[j]=false;
+        }
+        next = (i % nbreGraph(G)) +1;
+        // printf("%d %d\n",i,next);
+        DFS_Exp(G,next,Visite,i);
+        test=true;
+        for(int j = 0;j<nbreGraph(G);j++){
+            // printf("-%d %d\n",j+1,Visite[j]);
+           if(j==i-1 && Visite[j]==true){
+                test=false;
+           }else if(j != i-1 && Visite[j]==false){
+            test=false;
+           }
+        }
+        if(test==false){
+            printf("-->Le %d eme (info = %d) est un pts d'articulation \n",i,info(noeudGraph(G,i)));
+        }
+    }
+}
+
+
+void pts_articulation(Graph G){ //cas connexe 
+    printf("\n\t------------------->Point d'articulation<-------------------\n");
+    int *arti = malloc(nbreGraph(G)*sizeof(int));
+    Boolean *Visite = malloc(nbreGraph(G)*sizeof(Boolean));
+    int next;
+    int test = false;
+    int nb_composante = parcour_DFS(G);
+    int tmp_comp = 0;
+    for(int i=1;i<=nbreGraph(G);i++){  //tester chaque noeud 
+        for(int j = 0;j<nbreGraph(G);j++){
+            Visite[j]=false;
+        }
+        tmp_comp = 0;
+        for(int k = 1;k<=nbreGraph(G);k++){
+            if(Visite[k-1]==false && k!=i){
+                tmp_comp++;
+                DFS_Exp(G,k,Visite,i);
+            }
+        }
+        if(tmp_comp > nb_composante){
+            printf("-->Le %d eme (info = %d) est un pts d'articulation \n",i,info(noeudGraph(G,i)));
         }
     }
 }

@@ -7,22 +7,24 @@
 void main(){
     printf("\n\t------------------->MainNO<-------------------\n\n");
     Graph G = creerGraph();
-    int nb_noeuds = 5;
+    int nb_noeuds = 6;
     for(int i=1;i<=nb_noeuds;i++)
         creerNoeudAvecInfo(&G,i);
 
-    for(int i =1;i<=nbreGraph(G);i++){
-        afficher_noeud(noeudGraph(G,i));
-    }
+    // for(int i =1;i<=nbreGraph(G);i++){
+    //     afficher_noeud(noeudGraph(G,i));
+    // }
     printf("----------------------\n");
 
     creerArc(noeudGraph(G,1),noeudGraph(G,2),1);
     creerArc(noeudGraph(G,1),noeudGraph(G,3),2);
-    creerArc(noeudGraph(G,2),noeudGraph(G,4),2);
-    creerArc(noeudGraph(G,2),noeudGraph(G,5),3);
+    creerArc(noeudGraph(G,5),noeudGraph(G,4),2);
+    creerArc(noeudGraph(G,5),noeudGraph(G,6),2);
+    // creerArc(noeudGraph(G,2),noeudGraph(G,5),3);
     // parcour_DFS(G);
      printf("----------------------\n");
-    parcour_BFS(G);
+    // parcour_BFS(G);
+    pts_articulation(G);
     // for(int i=1;i<=nb_noeuds;i++)
     //     affInfo(noeudGraph(G,i),i*10);
 

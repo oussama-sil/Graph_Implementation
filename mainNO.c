@@ -16,11 +16,13 @@ void main(){
     }
     printf("----------------------\n");
 
-    creerArc(noeudGraph(G,1),noeudGraph(G,5),1);
-    creerArc(noeudGraph(G,1),noeudGraph(G,4),2);
-    creerArc(noeudGraph(G,2),noeudGraph(G,3),3);
-    parcour_DFS(G);
-
+    creerArc(noeudGraph(G,1),noeudGraph(G,2),1);
+    creerArc(noeudGraph(G,1),noeudGraph(G,3),2);
+    creerArc(noeudGraph(G,2),noeudGraph(G,4),2);
+    creerArc(noeudGraph(G,2),noeudGraph(G,5),3);
+    // parcour_DFS(G);
+     printf("----------------------\n");
+    parcour_BFS(G);
     // for(int i=1;i<=nb_noeuds;i++)
     //     affInfo(noeudGraph(G,i),i*10);
 

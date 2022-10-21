@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "file_attente.c"
 
 #define TYPE_INFO_ARC int
 #define TYPE_INFO_NOEUD int
@@ -380,7 +380,7 @@ void affArc(Noeud u,Noeud v,TYPE_INFO_ARC info){
     aff_info_arc(arc(v,u),info);
 }
 
-Noeud adjacent(Noeud u,int i){
+Noeud adjacent(Noeud u,int i){  // les adjacent dans [1..deg(u)]
     int indx =1;
     Arc p = liste_arc_noeud(u);
     int stop = 0;
@@ -490,8 +490,10 @@ void afficher_adjacents_noeud(Noeud u){
 
 
 
+
+
 /*********************************/
-/********Algo DFS*****/
+/**********Algo DFS**************/
 
 int getNoeudPos(Graph G,Noeud n){
     Noeud p = G.Prem;
@@ -506,7 +508,6 @@ int getNoeudPos(Graph G,Noeud n){
         return -1;
     }
 }
-
 
 void DFS(Graph G,int noeud_indx,Boolean Visite[]){
     Visite[noeud_indx-1] = true;
@@ -533,8 +534,47 @@ void parcour_DFS(Graph G){
             DFS(G,i,Visite);
         }
     }
-
-
 }
 
 
+
+
+/*********************************/
+/**********Algo BFS**************/
+
+void BFS(Graph G,int noeud_indx,Boolean Visite[]){
+    file_attente F;
+    creer_file(&F);
+    Visite[noeud_indx-1] = true;
+    printf("\t->Visite du noeud : %d\n",info(noeudGraph(G,noeud_indx)));
+    enfiler(&F,noeud_indx);
+    int a;
+    int tmp;
+    while(!file_vide(F)){
+        defiler(&F,&a);
+        for(int i  = 1;i<=degre(noeudGraph(G,a));i++){
+            tmp = getNoeudPos(G,adjacent(noeudGraph(G,a),i));  // pos de l'adjacent
+            if(Visite[tmp-1]==false){
+                printf("\t->Visite du noeud : %d\n",info(noeudGraph(G,tmp)));
+                Visite[tmp-1]=true;
+                enfiler(&F,tmp);
+            }
+        }
+    }
+}
+void parcour_BFS(Graph G){
+    printf("\n\t------------------->Parcour BFS<-------------------\n");
+    Boolean *Visite =  malloc(nbreGraph(G)*sizeof(Boolean));
+    int composante = 0;
+    for(int i = 0;i<nbreGraph(G);i++){
+        Visite[i]=false;
+    }
+
+    for(int i = 1;i<=nbreGraph(G);i++){
+        if(Visite[i-1]==false){
+            composante++;
+            printf("-->Visite composante %d : \n",composante);
+            BFS(G,i,Visite);
+        }
+    }
+}
